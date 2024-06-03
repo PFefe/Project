@@ -120,8 +120,7 @@ func (apiCfg *apiConfig) handlerDeleteFeedFollow(w http.ResponseWriter, r *http.
 	respondWithJSON(
 		w,
 		200,
-		struct {
-		}{},
+		struct{}{},
 	)
 
 }
