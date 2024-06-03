@@ -59,10 +59,8 @@ func (apiCfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Reques
 	)
 }
 
-func (apiCfg *apiConfig) handlerGetFeed(w http.ResponseWriter, r *http.Request, user database.User) {
-	feeds, err := apiCfg.DB.GetFeeds(
-		r.Context(),
-	)
+func (apiCfg *apiConfig) handlerGetFeeds(w http.ResponseWriter, r *http.Request) {
+	feeds, err := apiCfg.DB.GetFeeds(r.Context())
 	if err != nil {
 		respondWithError(
 			w,
