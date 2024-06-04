@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type apiConfig struct {
@@ -18,6 +19,7 @@ type apiConfig struct {
 }
 
 func main() {
+
 	godotenv.Load(".env")
 	portString := os.Getenv("PORT")
 	if portString == "" {
@@ -40,9 +42,16 @@ func main() {
 		)
 	}
 
+	db := database.New(conn)
 	apiCfg := apiConfig{
-		DB: database.New(conn),
+		DB: db,
 	}
+
+	go startScrapping(
+		db,
+		10,
+		time.Minute,
+	)
 
 	router := chi.NewRouter()
 	router.Use(
@@ -94,6 +103,10 @@ func main() {
 	v1Router.Delete(
 		"/feed_follows/{feedFollowID}",
 		apiCfg.middlewareAuth(apiCfg.handlerDeleteFeedFollow),
+	)
+	v1Router.Get(
+		"/posts",
+		apiCfg.middlewareAuth(apiCfg.handlerGetPostsForUser),
 	)
 
 	router.Mount(
